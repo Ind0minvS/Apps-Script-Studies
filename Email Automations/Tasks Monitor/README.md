@@ -47,7 +47,8 @@
 
 **EN**: Access the code page:
 
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/b17499ab-7c2c-4520-8d4b-e0393844da5c" />
+<img width="322" height="222" alt="Screenshot_20251215_175345" src="https://github.com/user-attachments/assets/a21cdf50-5260-4182-8412-a3477edc1b8b" />
+
 
 
 
