@@ -8,11 +8,21 @@
 
 <img width="761" height="205" alt="spreadsheetpng" src="https://github.com/user-attachments/assets/98b92a6b-6922-4433-8006-e402b0edc849" />
 
+
+
+
+
+
 **PT-BR**: Definindo o dia de hoje para uma tarefa em estado pendente:
 
 **EN**: Setting today as the due date for a pending task:
 
 <img width="674" height="424" alt="image" src="https://github.com/user-attachments/assets/1ad7fbd8-7d3b-4cd8-854d-ad61f2d2621c" />
+
+
+
+
+
 
 **PT-BR**: Pegando 5 dias atrás para uma tarefa em estado pendente:
 
@@ -21,14 +31,27 @@
 <img width="618" height="378" alt="image" src="https://github.com/user-attachments/assets/8e218081-3b88-430f-bc39-36ca332bf8f1" />
 
 
+
+
+
+
 ## Código - Code
 <img width="1317" height="615" alt="image" src="https://github.com/user-attachments/assets/c4072073-639b-496d-a455-8b5ce019ebc3" />
+
+
+
+
+
 
 **PT-BR**: Acessar a página de código:
 
 **EN**: Access the code page:
 
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/8b77f873-1422-4076-bdf8-59e50e368f27" />
+
+
+
+
 
 
 ## Gatilho
