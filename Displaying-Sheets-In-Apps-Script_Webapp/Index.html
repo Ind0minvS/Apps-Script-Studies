@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top"><!-- links break out of the iframe, not inside it -->
+    <?!= include('Styles') ?>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Left-side tab menu, one entry per sheet -->
+      <nav id="sidebar" aria-label="Abas da planilha">
+        <h2>Abas</h2>
+        <ul id="tabs"><li class="loading">Carregando…</li></ul>
+      </nav>
+
+      <!-- Content area: the selected sheet's data -->
+      <main id="content">
+        <h1 id="sheet-title">Visualizador de Planilha</h1>
+        <div id="data">Selecione uma aba à esquerda.</div>
+      </main>
+    </div>
+
+    <?!= include('JavaScript') ?>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #1f2937;
+    background: #f8fafc;
+  }
+
+  #app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Left sidebar / tab menu ---------- */
+  #sidebar {
+    flex: 0 0 220px;
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+  #sidebar h2 {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #94a3b8;
+    margin: 0 0 8px;
+    padding: 0 18px;
+  }
+  #tabs { list-style: none; margin: 0; padding: 0; }
+  #tabs li {
+    padding: 10px 18px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    font-size: .92rem;
+    transition: background .15s, border-color .15s;
+    word-break: break-word;
+  }
+  #tabs li:hover { background: #1e293b; }
+  #tabs li.active {
+    background: #1e293b;
+    border-left-color: #38bdf8;
+    color: #fff;
+    font-weight: 600;
+  }
+  #tabs li.loading { color: #64748b; cursor: default; }
+
+  /* ---------- Content ---------- */
+  #content {
+    flex: 1 1 auto;
+    padding: 24px 28px;
+    overflow-x: auto;
+  }
+  #sheet-title {
+    margin: 0 0 16px;
+    font-size: 1.4rem;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #e5e7eb;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: .9rem;
+    vertical-align: top;
+  }
+  th {
+    background: #f1f5f9;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .muted { color: #6b7280; }
+  .error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+  .spinner { color: #6b7280; }
+
+  /* Stack on narrow screens (Sites can be narrow) */
+  @media (max-width: 560px) {
+    #app { flex-direction: column; }
+    #sidebar { flex-basis: auto; }
+  }
+</style>

@@ -1,0 +1,90 @@
+<script>
+  /** Promise wrapper around google.script.run (callback-based by default). */
+  function call(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (resolve, reject) {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)[fn].apply(null, args);
+    });
+  }
+
+  var tabsEl    = document.getElementById('tabs');
+  var titleEl   = document.getElementById('sheet-title');
+  var dataEl    = document.getElementById('data');
+
+  /** Escape text so cell values can't inject HTML. */
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /** Load the list of sheets and build the left-side tabs. */
+  function loadTabs() {
+    call('getSheetNames').then(function (names) {
+      tabsEl.innerHTML = '';
+      if (!names.length) {
+        tabsEl.innerHTML = '<li class="loading">Nenhuma aba encontrada</li>';
+        return;
+      }
+      names.forEach(function (name, i) {
+        var li = document.createElement('li');
+        li.textContent = name;
+        li.setAttribute('data-name', name);
+        li.addEventListener('click', function () { selectTab(name, li); });
+        tabsEl.appendChild(li);
+        if (i === 0) selectTab(name, li); // auto-open the first sheet
+      });
+    }).catch(function (err) {
+      tabsEl.innerHTML = '';
+      dataEl.innerHTML = '<div class="error">Erro ao carregar abas: ' +
+        esc(err.message || err) + '</div>';
+    });
+  }
+
+  /** Mark a tab active and load its data. */
+  function selectTab(name, li) {
+    var all = tabsEl.querySelectorAll('li');
+    for (var k = 0; k < all.length; k++) all[k].classList.remove('active');
+    if (li) li.classList.add('active');
+
+    titleEl.textContent = name;
+    dataEl.innerHTML = '<p class="spinner">Carregando dados…</p>';
+
+    call('getSheetData', name).then(function (res) {
+      renderTable(res);
+    }).catch(function (err) {
+      dataEl.innerHTML = '<div class="error">Erro ao carregar dados: ' +
+        esc(err.message || err) + '</div>';
+    });
+  }
+
+  /** Render {header, rows} as an HTML table. */
+  function renderTable(res) {
+    if (!res || !res.rows.length) {
+      dataEl.innerHTML = '<p class="muted">Esta aba não possui dados preenchidos.</p>';
+      return;
+    }
+
+    var html = '<table><thead><tr>';
+    res.header.forEach(function (h, i) {
+      html += '<th>' + (esc(h) || ('Coluna ' + (i + 1))) + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+
+    res.rows.forEach(function (row) {
+      html += '<tr>';
+      // Pad short rows so columns line up with the header.
+      for (var c = 0; c < res.header.length; c++) {
+        html += '<td>' + esc(row[c] == null ? '' : row[c]) + '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+
+    dataEl.innerHTML = html;
+  }
+
+  loadTabs();
+</script>
