@@ -80,6 +80,14 @@
   }
   tr:nth-child(even) td { background: #fafafa; }
 
+  /* Merged cells (and single-value rows) are centered, like in the sheet */
+  td.merged {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 600;
+    background: #f8fafc;
+  }
+
   .muted { color: #6b7280; }
   .error {
     background: #fef2f2;

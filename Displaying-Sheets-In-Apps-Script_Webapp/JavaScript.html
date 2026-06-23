@@ -60,29 +60,78 @@
     });
   }
 
-  /** Render {header, rows} as an HTML table. */
+  /** Render {rows, merges, numCols} as an HTML table, reproducing merges. */
   function renderTable(res) {
     if (!res || !res.rows.length) {
       dataEl.innerHTML = '<p class="muted">Esta aba não possui dados preenchidos.</p>';
       return;
     }
 
-    var html = '<table><thead><tr>';
-    res.header.forEach(function (h, i) {
-      html += '<th>' + (esc(h) || ('Coluna ' + (i + 1))) + '</th>';
-    });
-    html += '</tr></thead><tbody>';
+    var rows = res.rows;
+    var numCols = res.numCols;
 
-    res.rows.forEach(function (row) {
+    // Build lookup maps from the sheet's merged ranges:
+    //  - anchor[r][c]  = {colspan, rowspan} for the top-left cell of a merge
+    //  - covered[r][c] = true for the other cells of a merge (skip them)
+    var anchor = {};
+    var covered = {};
+    (res.merges || []).forEach(function (m) {
+      anchor[m.row + ':' + m.col] = { colspan: m.numCols, rowspan: m.numRows };
+      for (var dr = 0; dr < m.numRows; dr++) {
+        for (var dc = 0; dc < m.numCols; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          covered[(m.row + dr) + ':' + (m.col + dc)] = true;
+        }
+      }
+    });
+
+    function isBlank(r) {
+      return rows[r].every(function (v) { return String(v == null ? '' : v).trim() === ''; });
+    }
+
+    var html = '<table><tbody>';
+
+    for (var r = 0; r < rows.length; r++) {
+      if (isBlank(r)) continue; // drop fully-empty rows
+
       html += '<tr>';
-      // Pad short rows so columns line up with the header.
-      for (var c = 0; c < res.header.length; c++) {
-        html += '<td>' + esc(row[c] == null ? '' : row[c]) + '</td>';
+
+      // A non-merged row that has a single value -> span & center it,
+      // so values aren't followed by stray empty cells.
+      var nonEmpty = [];
+      for (var k = 0; k < numCols; k++) {
+        if (String(rows[r][k] == null ? '' : rows[r][k]).trim() !== '') nonEmpty.push(k);
+      }
+      var hasMergeOnRow = false;
+      for (var k2 = 0; k2 < numCols; k2++) {
+        if (anchor[r + ':' + k2] || covered[r + ':' + k2]) { hasMergeOnRow = true; break; }
+      }
+      var spanWholeRow = !hasMergeOnRow && nonEmpty.length === 1;
+
+      if (spanWholeRow) {
+        var val = rows[r][nonEmpty[0]];
+        html += '<td colspan="' + numCols + '" class="merged">' + esc(val) + '</td></tr>';
+        continue;
+      }
+
+      for (var c = 0; c < numCols; c++) {
+        var key = r + ':' + c;
+        if (covered[key]) continue; // part of a merge, already spanned
+
+        var attrs = '';
+        var cls = '';
+        var a = anchor[key];
+        if (a) {
+          if (a.colspan > 1) attrs += ' colspan="' + a.colspan + '"';
+          if (a.rowspan > 1) attrs += ' rowspan="' + a.rowspan + '"';
+          cls = ' class="merged"'; // merged cells are centered
+        }
+        html += '<td' + attrs + cls + '>' + esc(rows[r][c] == null ? '' : rows[r][c]) + '</td>';
       }
       html += '</tr>';
-    });
-    html += '</tbody></table>';
+    }
 
+    html += '</tbody></table>';
     dataEl.innerHTML = html;
   }
 
